@@ -1,6 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,29 +25,37 @@ public class CadastroCidadeService {
 	private EstadoRepository estadoRepository;
 	
 	public List<Cidade> listar(){
-		return cidadeRepository.listar();
+		return cidadeRepository.findAll();
 	}
 	
 	public Cidade buscar(Long id) {
-		return cidadeRepository.buscar(id);
+		
+		Optional<Cidade> cidadeOptional = cidadeRepository.findById(id);
+		
+		if(cidadeOptional.isEmpty()) {
+			throw new EntidadeNaoEncontradaException(
+					String.format("Não existe um cadastro de cidade com o código %d", id));
+		}
+		
+		return cidadeOptional.get();
 	}
 	
 	public Cidade salvar(Cidade cidade) {
 		Long estadoId = cidade.getEstado().getId();
-		Estado estado = estadoRepository.buscar(estadoId);
+		Optional<Estado> estadoOpt = estadoRepository.findById(estadoId);
 		
-		if(estado == null) {
+		if(estadoOpt.isEmpty()) {
 			throw new EntidadeNaoEncontradaException(
 					String.format("Não existe cadastro de estado com código %d", estadoId));
 		}
 		
-		cidade.setEstado(estado);
-		return cidadeRepository.salvar(cidade);
+		cidade.setEstado(estadoOpt.get());
+		return cidadeRepository.save(cidade);
 	}
 	
 	public void remover(Long id) {
 		try {
-			cidadeRepository.remover(id);
+			cidadeRepository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
 			throw new EntidadeNaoEncontradaException(
 					String.format("Não existe um cadastro de cidade com o código %d", id));

@@ -35,9 +35,10 @@ public class EstadoController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Estado> buscar(@PathVariable Long id){
-		Estado estado = estadoService.buscar(id);
-		
-		if(estado == null) {
+		Estado estado;
+		try {
+			estado = estadoService.buscar(id);
+		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();
 		}
 		
@@ -53,15 +54,17 @@ public class EstadoController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Estado> atualizar(@PathVariable Long id, @RequestBody Estado estado) {
-		Estado estadoExistente = estadoService.buscar(id);
+		Estado estadoExistente;
 		
-		if(estadoExistente != null) {
-			BeanUtils.copyProperties(estado, estadoExistente, "id");
-			estadoExistente = estadoService.salvar(estadoExistente);
-			return ResponseEntity.ok(estadoExistente);
+		try {
+			estadoExistente = estadoService.buscar(id);
+		} catch (EntidadeNaoEncontradaException e) {
+			return ResponseEntity.notFound().build();
 		}
 		
-		return ResponseEntity.notFound().build();
+		BeanUtils.copyProperties(estado, estadoExistente, "id");
+		estadoExistente = estadoService.salvar(estadoExistente);
+		return ResponseEntity.ok(estadoExistente);
 	}
 	
 	@DeleteMapping("/{id}")
