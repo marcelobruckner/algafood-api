@@ -19,11 +19,6 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryCustom {
 
   @Override
   public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal) {
-    System.out.println("RestauranteRepositoryImpl ::: find");
-		System.out.println("nome: " + nome);
-		System.out.println("taxaInicial: " + taxaFreteInicial);
-		System.out.println("taxaFinal: " + taxaFreteFinal);
-
     var jpql = "from Restaurante where nome like :nome "
              + "and taxaFrete between :taxaInicial and :taxaFinal";
 
