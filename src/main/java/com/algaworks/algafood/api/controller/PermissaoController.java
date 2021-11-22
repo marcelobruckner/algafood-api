@@ -11,7 +11,7 @@ import com.algaworks.algafood.domain.model.Permissao;
 import com.algaworks.algafood.domain.repository.PermissaoRepository;
 
 @RestController
-@RequestMapping("permissao")
+@RequestMapping("permissoes")
 public class PermissaoController {
 
 	@Autowired
