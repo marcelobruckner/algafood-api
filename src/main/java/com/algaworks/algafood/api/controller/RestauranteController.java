@@ -4,6 +4,12 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
+import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.service.CadastroRestauranteService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,26 +24,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
-import com.algaworks.algafood.domain.exception.NegocioException;
-import com.algaworks.algafood.domain.model.Restaurante;
-import com.algaworks.algafood.domain.repository.RestauranteRepository;
-import com.algaworks.algafood.domain.service.CadastroRestauranteService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 @RequestMapping("/restaurantes")
 @RestController
 public class RestauranteController {
-
-	@Autowired
-	private RestauranteRepository restauranteRepository;
 
 	@Autowired
 	private CadastroRestauranteService cadastroRestaurante;
 
 	@GetMapping
 	public List<Restaurante> listar() {
-		return restauranteRepository.findAll();
+		return cadastroRestaurante.findAll();
 	}
 
 	@GetMapping("/{id}")

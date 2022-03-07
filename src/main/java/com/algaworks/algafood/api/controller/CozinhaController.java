@@ -2,6 +2,9 @@ package com.algaworks.algafood.api.controller;
 
 import java.util.List;
 
+import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.service.CadastroCozinhaService;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,23 +18,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.domain.model.Cozinha;
-import com.algaworks.algafood.domain.repository.CozinhaRepository;
-import com.algaworks.algafood.domain.service.CadastroCozinhaService;
-
 @RequestMapping("/cozinhas")
 @RestController
 public class CozinhaController {
-
-	@Autowired
-	private CozinhaRepository cozinhaRepository;
 
 	@Autowired
 	private CadastroCozinhaService cadastroCozinha;
 
 	@GetMapping
 	public List<Cozinha> listar() {
-		return cozinhaRepository.findAll();
+		return cadastroCozinha.findAll();
 	}
 
 	@GetMapping("/{cozinhaId}")

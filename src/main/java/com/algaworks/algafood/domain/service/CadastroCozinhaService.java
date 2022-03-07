@@ -5,6 +5,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Cozinha;
@@ -38,4 +40,8 @@ public class CadastroCozinhaService {
 			throw new EntidadeEmUsoException(String.format(MSG_COZINHA_EM_USO, cozinhaId));
 		}
 	}
+
+  public List<Cozinha> findAll() {
+    return cozinhaRepository.findAll();
+  }
 }
