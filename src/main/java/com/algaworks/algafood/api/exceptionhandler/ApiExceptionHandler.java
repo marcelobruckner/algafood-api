@@ -1,61 +1,96 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
-import java.time.LocalDateTime;
-
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpMediaTypeException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class ApiExceptionHandler {
+public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+
+  @Override
+  protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
+      HttpStatus status, WebRequest request) {
+
+    ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+    String detail = "O corpo da requisição está inválido. Verifique o erro de sintaxe.";
+
+    Problem problem = createProblewBuilder(status, problemType, detail).build();
+
+    return handleExceptionInternal(ex, problem, headers, status, request);
+  }
 
   @ExceptionHandler(EntidadeNaoEncontradaException.class)
-  public ResponseEntity<?> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException e) {
-    Problema problema = Problema.builder()
-        .dataHora(LocalDateTime.now())
-        .mensagem(e.getMessage())
-        .build();
+  public ResponseEntity<?> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex, WebRequest request) {
 
-    return ResponseEntity.status(HttpStatus.NOT_FOUND)
-        .body(problema);
+    HttpStatus status = HttpStatus.NOT_FOUND;
+    ProblemType problemType = ProblemType.ENTIDADE_NAO_ENCONTRADA;
+    String detail = ex.getMessage();
+
+    Problem problem = createProblewBuilder(status, problemType, detail).build();
+
+    return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
   }
 
   @ExceptionHandler(EntidadeEmUsoException.class)
-  public ResponseEntity<?> handleEntidadeEmUsoException(EntidadeEmUsoException e) {
-    Problema problema = Problema.builder()
-        .dataHora(LocalDateTime.now())
-        .mensagem(e.getMessage())
-        .build();
+  public ResponseEntity<?> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
 
-    return ResponseEntity.status(HttpStatus.CONFLICT)
-        .body(problema);
+    HttpStatus status = HttpStatus.CONFLICT;
+    ProblemType problemType = ProblemType.ENTIDADE_EM_USO;
+    String detail = ex.getMessage();
+
+    Problem problem = createProblewBuilder(status, problemType, detail).build();
+
+    return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
   }
 
   @ExceptionHandler(NegocioException.class)
-  public ResponseEntity<?> handleNegocioException(NegocioException e) {
-    Problema problema = Problema.builder()
-        .dataHora(LocalDateTime.now())
-        .mensagem(e.getMessage())
-        .build();
+  public ResponseEntity<?> handleNegocioException(NegocioException ex, WebRequest request) {
 
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(problema);
+    HttpStatus status = HttpStatus.BAD_REQUEST;
+    ProblemType problemType = ProblemType.NEGOCIO_EXCEPTION;
+    String detail = ex.getMessage();
+
+    Problem problem = createProblewBuilder(status, problemType, detail).build();
+
+    return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
   }
 
-  @ExceptionHandler(HttpMediaTypeException.class)
-  public ResponseEntity<?> handleHttpMediaTypeException() {
-    Problema problema = Problema.builder()
-        .dataHora(LocalDateTime.now())
-        .mensagem("O tipo de mídia não é aceito")
-        .build();
+  @Override
+  protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
+      HttpStatus status, WebRequest request) {
 
-    return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-        .body(problema);
+    if (body == null) {
+      // caira aqui caso seja alguma exception do spring tratada por
+      // ResponseEntityExceptionHandler (classe extendida)
+      body = Problem.builder()
+          .title(status.getReasonPhrase())
+          .status(status.value())
+          .build();
+    } else if (body instanceof String) {
+      body = Problem.builder()
+          .title((String) body)
+          .status(status.value())
+          .build();
+    }
+    return super.handleExceptionInternal(ex, body, headers, status, request);
+  }
+
+  private Problem.ProblemBuilder createProblewBuilder(HttpStatus status,
+      ProblemType problemType, String detail) {
+
+    return Problem.builder()
+        .status(status.value())
+        .type(problemType.getUri())
+        .title(problemType.getTitle())
+        .detail(detail);
   }
 }
