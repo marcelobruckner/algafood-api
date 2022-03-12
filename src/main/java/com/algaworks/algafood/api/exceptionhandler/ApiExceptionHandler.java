@@ -31,7 +31,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     if (rootCause instanceof InvalidFormatException) {
       return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, request);
     } else if (rootCause instanceof PropertyBindingException) {
-      return hanldePropertyBindingException((PropertyBindingException) rootCause, headers, status, request);
+      return handlePropertyBindingException((PropertyBindingException) rootCause, headers, status, request);
     }
 
     ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
@@ -42,7 +42,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     return handleExceptionInternal(ex, problem, headers, status, request);
   }
 
-  private ResponseEntity<Object> hanldePropertyBindingException(PropertyBindingException ex, HttpHeaders headers,
+  private ResponseEntity<Object> handlePropertyBindingException(PropertyBindingException ex, HttpHeaders headers,
       HttpStatus status, WebRequest request) {
 
     String path = joinPath(ex.getPath());
