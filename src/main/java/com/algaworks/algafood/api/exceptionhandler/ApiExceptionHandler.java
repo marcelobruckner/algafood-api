@@ -2,7 +2,6 @@ package com.algaworks.algafood.api.exceptionhandler;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
