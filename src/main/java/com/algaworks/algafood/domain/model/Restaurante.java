@@ -27,7 +27,7 @@ import javax.validation.groups.Default;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.algaworks.algafood.Groups;
+import com.algaworks.algafood.core.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.EqualsAndHashCode;
@@ -51,6 +51,7 @@ public class Restaurante {
 	@Column(nullable = false)
 	private String nome;
 
+	@NotNull
 	@PositiveOrZero
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
