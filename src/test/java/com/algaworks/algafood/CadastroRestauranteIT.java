@@ -1,7 +1,6 @@
 package com.algaworks.algafood;
 
 import static io.restassured.RestAssured.given;
-import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 
@@ -15,7 +14,6 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.ui.context.Theme;
 
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
