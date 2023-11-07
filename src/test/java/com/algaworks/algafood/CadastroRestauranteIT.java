@@ -1,19 +1,17 @@
 package com.algaworks.algafood;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.math.BigDecimal;
 
-import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -25,13 +23,14 @@ import com.algaworks.algafood.util.ResourceUtils;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("/application-test.properties")
 public class CadastroRestauranteIT {
 
   private static final String VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE = "Violação de regra de negócio";
-  private static final String DADOS_INVALIDOS_PROBLEM_TITLE = "Recurso não encontrado";
+
+  private static final String DADOS_INVALIDOS_PROBLEM_TITLE = "Dados inválidos";
+
   private static final int RESTAURANTE_ID_INEXISTENTE = 100;
 
   @LocalServerPort
@@ -53,7 +52,7 @@ public class CadastroRestauranteIT {
 
   private Restaurante burgerTopRestaurante;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     RestAssured.port = port;
@@ -107,7 +106,7 @@ public class CadastroRestauranteIT {
         .post()
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
-        .body("title", Matchers.equalTo(DADOS_INVALIDOS_PROBLEM_TITLE));
+        .body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE));
   }
 
   @Test
@@ -120,7 +119,7 @@ public class CadastroRestauranteIT {
         .post()
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
-        .body("title", Matchers.equalTo(DADOS_INVALIDOS_PROBLEM_TITLE));
+        .body("title", equalTo(DADOS_INVALIDOS_PROBLEM_TITLE));
   }
 
   @Test
@@ -133,7 +132,7 @@ public class CadastroRestauranteIT {
         .post()
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
-        .body("title", Matchers.equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
+        .body("title", equalTo(VIOLACAO_DE_REGRA_DE_NEGOCIO_PROBLEM_TYPE));
   }
 
   @Test
@@ -145,7 +144,7 @@ public class CadastroRestauranteIT {
         .get("/{restauranteId}")
         .then()
         .statusCode(HttpStatus.OK.value())
-        .body("nome", Matchers.equalTo(burgerTopRestaurante.getNome()));
+        .body("nome", equalTo(burgerTopRestaurante.getNome()));
   }
 
   @Test
