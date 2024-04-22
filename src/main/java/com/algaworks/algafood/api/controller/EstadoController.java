@@ -1,27 +1,27 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
-import org.springframework.beans.BeanUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.algaworks.algafood.api.assembler.EstadoInputDisassembler;
+import com.algaworks.algafood.api.assembler.EstadoModelAssembler;
+import com.algaworks.algafood.api.model.EstadoModel;
+import com.algaworks.algafood.api.model.input.EstadoInput;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.service.CadastroEstadoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/estados")
 public class EstadoController {
+
+	@Autowired
+	private EstadoModelAssembler estadoModelAssembler;
+
+	@Autowired
+	private EstadoInputDisassembler estadoInputDisassembler;
 
 	private CadastroEstadoService cadastroEstado;
 
@@ -30,28 +30,33 @@ public class EstadoController {
 	}
 
 	@GetMapping
-	public List<Estado> listar() {
-		return cadastroEstado.listar();
+	public List<EstadoModel> listar() {
+		List<Estado> todosEstados = cadastroEstado.listar();
+		return estadoModelAssembler.toCollectionModel(todosEstados);
 	}
 
 	@GetMapping("/{id}")
-	public Estado buscar(@PathVariable Long id) {
-		return cadastroEstado.buscarOuFalhar(id);
+	public EstadoModel buscar(@PathVariable Long id) {
+		Estado estado = cadastroEstado.buscarOuFalhar(id);
+		return estadoModelAssembler.toModel(estado);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Estado adicionar(@RequestBody @Valid Estado estado) {
-		return cadastroEstado.salvar(estado);
+	public EstadoModel adicionar(@RequestBody @Valid EstadoInput estadoInput) {
+		Estado estado = estadoInputDisassembler.toDomainObject(estadoInput);
+		estado = cadastroEstado.salvar(estado);
+		return estadoModelAssembler.toModel(estado);
 	}
 
 	@PutMapping("/{id}")
-	public Estado atualizar(@PathVariable Long id, @RequestBody @Valid Estado estado) {
+	public EstadoModel atualizar(@PathVariable Long id, @RequestBody @Valid EstadoInput estadoInput) {
+
 		Estado estadoAtual = cadastroEstado.buscarOuFalhar(id);
+		estadoInputDisassembler.copyToDomainObject(estadoInput, estadoAtual);
+		estadoAtual = cadastroEstado.salvar(estadoAtual);
 
-		BeanUtils.copyProperties(estado, estadoAtual, "id");
-
-		return cadastroEstado.salvar(estadoAtual);
+		return estadoModelAssembler.toModel(estadoAtual);
 	}
 
 	@DeleteMapping("/{id}")
