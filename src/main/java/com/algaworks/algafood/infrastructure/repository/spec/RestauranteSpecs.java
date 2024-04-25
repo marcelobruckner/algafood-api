@@ -27,6 +27,7 @@ public class RestauranteSpecs {
 		return new Specification<Restaurante>() {
 			private static final long serialVersionUID = 1L;
 
+			@SuppressWarnings("null")
 			@Override
 			public Predicate toPredicate(Root<Restaurante> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
 				return builder.greaterThan(root.get("taxaFrete"), BigDecimal.valueOf(2.0));

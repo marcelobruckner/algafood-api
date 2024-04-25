@@ -39,6 +39,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
   @Autowired
   private MessageSource messageSource;
 
+  @SuppressWarnings("null")
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
       HttpStatus status, WebRequest request) {
@@ -67,6 +68,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     return handleExceptionInternal(ex, problem, headers, status, request);
   }
 
+  @SuppressWarnings("null")
   @Override
   protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
       HttpStatus status, WebRequest request) {
@@ -78,6 +80,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     return handleExceptionInternal(ex, problem, headers, status, request);
   }
 
+  @SuppressWarnings("null")
   @Override
   protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatus status,
       WebRequest request) {
@@ -89,6 +92,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     return super.handleTypeMismatch(ex, headers, status, request);
   }
 
+  @SuppressWarnings("null")
   private ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex,
       HttpHeaders headers, HttpStatus status, WebRequest request) {
     // String path = joinPath(ex.getPath());
@@ -103,6 +107,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     return handleExceptionInternal(ex, problem, headers, status, request);
   }
 
+  @SuppressWarnings("null")
   @Override
   protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
       HttpStatus status, WebRequest request) {
@@ -199,6 +204,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
   }
 
+  @SuppressWarnings("null")
   @Override
   protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
       HttpStatus status, WebRequest request) {

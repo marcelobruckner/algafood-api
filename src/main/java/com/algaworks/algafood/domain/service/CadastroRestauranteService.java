@@ -20,6 +20,18 @@ public class CadastroRestauranteService {
 	@Autowired
 	private CadastroCozinhaService cozinhaService;
 
+	@Transactional
+	public void inativar(Long restauranteId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		restaurante.inativar();
+	}
+
+	@Transactional
+	public void ativar(Long restauranteId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		restaurante.ativar();
+	}
+
 	public Restaurante buscarOuFalhar(Long restauranteId) {
 		return restauranteRepository.findById(restauranteId).orElseThrow(
 				() -> new RestauranteNaoEncontradoException(restauranteId));

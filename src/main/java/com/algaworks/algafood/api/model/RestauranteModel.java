@@ -16,5 +16,6 @@ public class RestauranteModel {
 	private CozinhaModel cozinha;
 	private OffsetDateTime dataCadastro;
 	private OffsetDateTime dataAtualizacao;
+	private Boolean ativo;
 
 }
