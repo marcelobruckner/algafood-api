@@ -1,7 +1,6 @@
 package com.algaworks.algafood.api.model;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,8 +13,9 @@ public class RestauranteModel {
 	private String nome;
 	private BigDecimal taxaFrete;
 	private CozinhaModel cozinha;
-	private OffsetDateTime dataCadastro;
-	private OffsetDateTime dataAtualizacao;
+	// private OffsetDateTime dataCadastro;
+	// private OffsetDateTime dataAtualizacao;
 	private Boolean ativo;
+	private EnderecoModel endereco;
 
 }
